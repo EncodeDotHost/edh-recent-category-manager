@@ -2,9 +2,9 @@
 Contributors: encodedothost, nbwpuk
 Tags: categories, posts, automation, recent posts
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -58,6 +58,13 @@ The plugin takes no action until a category is selected and saved in the setting
 1. The settings page under Posts → Recent Posts.
 
 == Changelog ==
+
+= 1.1 =
+* Added settings page under Posts → Recent Posts.
+* Managed category and post count (1–15) are now configurable via the WordPress admin.
+* Switching to a different managed category cleanly removes plugin assignments from the previous one.
+* Changing settings takes effect immediately without waiting for the next publish event.
+* Site default category (Uncategorized) is excluded from the category dropdown.
 
 = 1.0 =
 * Initial release.
