@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: EDH Recent Posts
+ * Plugin Name: EDH Recent Category Manager
  * Description: Automatically maintains the latest N published posts in a chosen category or tag in real-time.
- * Version: 1.2.1
+ * Version: 1.3
  * Requires at least:
  * Requires PHP:
  * Tested up to: 7.0
@@ -10,13 +10,13 @@
  * Author URI: https://encode.host
  * Contributor: EncodeDotHost, nbwpuk
  * License: GPL v3 or later
- * Text Domain: edh-recent-posts
+ * Text Domain: edh-recent-category-manager
  *
- * @package edh-recent-posts
+ * @package edh-recent-category-manager
  * @author EncodeDotHost
  * @contributor nbwpuk
  * @version 1.2.1
- * @link https://github.com/EncodeDotHost/edh-recent-posts
+ * @link https://github.com/EncodeDotHost/edh-recent-category-manager
  * @license GPL v3 or later
  */
 
@@ -28,14 +28,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Admin: settings page under Posts menu
 // ---------------------------------------------------------------------------
 
-add_action( 'admin_menu', 'edh_rp_add_settings_page' );
-function edh_rp_add_settings_page() {
+add_action( 'admin_menu', 'edh_rcm_add_settings_page' );
+function edh_rcm_add_settings_page() {
     add_posts_page(
-        'EDH Recent Posts Settings',
+        'EDH Recent Category Manager Settings',
         'Recent Posts',
         'manage_options',
-        'edh-recent-posts',
-        'edh_rp_render_settings_page'
+        'edh-recent-category-manager',
+        'edh_rcm_render_settings_page'
     );
 }
 
@@ -43,10 +43,10 @@ function edh_rp_add_settings_page() {
 // Admin: register settings
 // ---------------------------------------------------------------------------
 
-add_action( 'admin_init', 'edh_rp_register_settings' );
-function edh_rp_register_settings() {
+add_action( 'admin_init', 'edh_rcm_register_settings' );
+function edh_rcm_register_settings() {
     register_setting( 'edh_recent_posts_settings', 'edh_recent_posts_taxonomy', array(
-        'sanitize_callback' => 'edh_rp_sanitize_taxonomy',
+        'sanitize_callback' => 'edh_rcm_sanitize_taxonomy',
     ) );
     register_setting( 'edh_recent_posts_settings', 'edh_recent_posts_category', array(
         'sanitize_callback' => 'absint',
@@ -55,15 +55,15 @@ function edh_rp_register_settings() {
         'sanitize_callback' => 'absint',
     ) );
     register_setting( 'edh_recent_posts_settings', 'edh_recent_posts_count', array(
-        'sanitize_callback' => 'edh_rp_sanitize_count',
+        'sanitize_callback' => 'edh_rcm_sanitize_count',
     ) );
 }
 
-function edh_rp_sanitize_taxonomy( $value ) {
+function edh_rcm_sanitize_taxonomy( $value ) {
     return in_array( $value, array( 'category', 'post_tag' ), true ) ? $value : 'category';
 }
 
-function edh_rp_sanitize_count( $value ) {
+function edh_rcm_sanitize_count( $value ) {
     $value = absint( $value );
     return ( $value >= 1 && $value <= 15 ) ? $value : 6;
 }
@@ -72,7 +72,7 @@ function edh_rp_sanitize_count( $value ) {
 // Admin: settings page HTML
 // ---------------------------------------------------------------------------
 
-function edh_rp_render_settings_page() {
+function edh_rcm_render_settings_page() {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
@@ -195,7 +195,7 @@ function edh_rp_render_settings_page() {
 // ---------------------------------------------------------------------------
 
 // Strips all posts from a given taxonomy term managed by this plugin.
-function edh_rp_clear_term( $taxonomy, $term_id ) {
+function edh_rcm_clear_term( $taxonomy, $term_id ) {
     if ( ! $term_id ) {
         return;
     }
@@ -214,8 +214,8 @@ function edh_rp_clear_term( $taxonomy, $term_id ) {
     }
 }
 
-add_action( 'updated_option', 'edh_rp_on_option_updated', 10, 3 );
-function edh_rp_on_option_updated( $option, $old_value, $new_value ) {
+add_action( 'updated_option', 'edh_rcm_on_option_updated', 10, 3 );
+function edh_rcm_on_option_updated( $option, $old_value, $new_value ) {
     if ( $old_value === $new_value ) {
         return;
     }
@@ -225,17 +225,17 @@ function edh_rp_on_option_updated( $option, $old_value, $new_value ) {
         $old_term_id = ( 'category' === $old_value )
             ? (int) get_option( 'edh_recent_posts_category', 0 )
             : (int) get_option( 'edh_recent_posts_tag', 0 );
-        edh_rp_clear_term( $old_value, $old_term_id );
+        edh_rcm_clear_term( $old_value, $old_term_id );
     }
 
     // When the managed category changes, clear posts from the old category.
     if ( 'edh_recent_posts_category' === $option ) {
-        edh_rp_clear_term( 'category', (int) $old_value );
+        edh_rcm_clear_term( 'category', (int) $old_value );
     }
 
     // When the managed tag changes, clear posts from the old tag.
     if ( 'edh_recent_posts_tag' === $option ) {
-        edh_rp_clear_term( 'post_tag', (int) $old_value );
+        edh_rcm_clear_term( 'post_tag', (int) $old_value );
     }
 
     $managed_options = array(
@@ -245,17 +245,17 @@ function edh_rp_on_option_updated( $option, $old_value, $new_value ) {
         'edh_recent_posts_count',
     );
     if ( in_array( $option, $managed_options, true ) ) {
-        edh_rp_update_recent_articles_category();
+        edh_rcm_update_recent_articles_category();
     }
 }
 
 // Fires on first-ever save when the option doesn't yet exist in wp_options.
-add_action( 'added_option', 'edh_rp_on_option_added', 10, 2 );
-function edh_rp_on_option_added( $option, $value ) {
+add_action( 'added_option', 'edh_rcm_on_option_added', 10, 2 );
+function edh_rcm_on_option_added( $option, $value ) {
     // Adding taxonomy for the first time is a switch FROM the implicit default
     // ('category') — clear any existing managed category assignments.
     if ( 'edh_recent_posts_taxonomy' === $option && 'category' !== $value ) {
-        edh_rp_clear_term( 'category', (int) get_option( 'edh_recent_posts_category', 0 ) );
+        edh_rcm_clear_term( 'category', (int) get_option( 'edh_recent_posts_category', 0 ) );
     }
 
     $managed_options = array(
@@ -265,7 +265,7 @@ function edh_rp_on_option_added( $option, $value ) {
         'edh_recent_posts_count',
     );
     if ( in_array( $option, $managed_options, true ) ) {
-        edh_rp_update_recent_articles_category();
+        edh_rcm_update_recent_articles_category();
     }
 }
 
@@ -273,30 +273,30 @@ function edh_rp_on_option_added( $option, $value ) {
 // Post lifecycle hooks
 // ---------------------------------------------------------------------------
 
-add_action( 'transition_post_status', 'edh_rp_trigger_on_status_change', 10, 3 );
-function edh_rp_trigger_on_status_change( $_new_status, $_old_status, $post ) {
+add_action( 'transition_post_status', 'edh_rcm_trigger_on_status_change', 10, 3 );
+function edh_rcm_trigger_on_status_change( $_new_status, $_old_status, $post ) {
     if ( 'post' === $post->post_type ) {
-        edh_rp_update_recent_articles_category();
+        edh_rcm_update_recent_articles_category();
     }
 }
 
-add_action( 'deleted_post', 'edh_rp_trigger_on_deletion' );
-function edh_rp_trigger_on_deletion( $post_id ) {
+add_action( 'deleted_post', 'edh_rcm_trigger_on_deletion' );
+function edh_rcm_trigger_on_deletion( $post_id ) {
     if ( 'post' === get_post_type( $post_id ) ) {
-        edh_rp_update_recent_articles_category();
+        edh_rcm_update_recent_articles_category();
     }
 }
 
-register_activation_hook( __FILE__, 'edh_rp_activate_plugin' );
-function edh_rp_activate_plugin() {
-    edh_rp_update_recent_articles_category();
+register_activation_hook( __FILE__, 'edh_rcm_activate_plugin' );
+function edh_rcm_activate_plugin() {
+    edh_rcm_update_recent_articles_category();
 }
 
 // ---------------------------------------------------------------------------
 // Core function
 // ---------------------------------------------------------------------------
 
-function edh_rp_update_recent_articles_category() {
+function edh_rcm_update_recent_articles_category() {
     $taxonomy   = get_option( 'edh_recent_posts_taxonomy', 'category' );
     $term_id    = ( 'category' === $taxonomy )
         ? (int) get_option( 'edh_recent_posts_category', 0 )

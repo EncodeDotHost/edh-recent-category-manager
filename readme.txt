@@ -1,10 +1,10 @@
-=== EDH Recent Posts ===
+=== EDH Recent Category Manager ===
 Contributors: encodedothost, nbwpuk
 Tags: categories, tags, posts, automation, recent posts
 Requires at least: 5.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,7 +12,7 @@ Automatically maintains a configurable number of your latest published posts in 
 
 == Description ==
 
-EDH Recent Posts removes the manual work of curating a "recent articles" category or tag. Once configured, the plugin silently monitors your site and ensures that exactly the number of posts you choose are always assigned to your selected category or tag — no more, no less.
+EDH Recent Category Manager removes the manual work of curating a "recent articles" category or tag. Once configured, the plugin silently monitors your site and ensures that exactly the number of posts you choose are always assigned to your selected category or tag — no more, no less.
 
 Whenever a post is published, unpublished, or permanently deleted, the membership is recalculated instantly. The oldest post drops out and the newest one takes its place.
 
@@ -28,15 +28,19 @@ Whenever a post is published, unpublished, or permanently deleted, the membershi
 
 == Installation ==
 
-1. Upload the `edh-recent-posts` folder to the `/wp-content/plugins/` directory.
+1. Upload the `edh-recent-category-manager` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the **Plugins** screen in WordPress.
 3. Go to **Posts → Recent Posts** to configure the managed category and post count.
 
 == Frequently Asked Questions ==
 
+= What does "EDH" stand for? =
+
+EDH is short for EncodeDotHost — keeping the plugin name succinct and memorable while making it clearly identifiable as a plugin maintained by the EncodeDotHost team.
+
 = Why is the "Uncategorized" category not shown in the dropdown? =
 
-WordPress designates one category as the site default (usually "Uncategorized"). Posts are assigned to it automatically if no other category is chosen, so it is not suitable as a managed category. EDH Recent Posts excludes whichever category is currently set as the site default, even if it has been renamed.
+WordPress designates one category as the site default (usually "Uncategorized"). Posts are assigned to it automatically if no other category is chosen, so it is not suitable as a managed category. EDH Recent Category Manager excludes whichever category is currently set as the site default, even if it has been renamed.
 
 = What happens to posts in the old category or tag when I switch to a different one? =
 
@@ -59,6 +63,9 @@ The plugin takes no action until a term is selected and saved in the settings.
 1. The settings page under Posts → Recent Posts.
 
 == Changelog ==
+
+= 1.3 =
+* Renamed plugin to EDH Recent Category Manager with new slug edh-recent-category-manager.
 
 = 1.2.1 =
 * Fixed: switching from a managed category to a tag (or vice versa) on a fresh install or after upgrading from v1.1 now correctly removes the previous term's assignments before applying the new one.
