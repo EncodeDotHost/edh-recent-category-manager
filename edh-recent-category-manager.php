@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EDH Recent Category Manager
  * Description: Automatically maintains the latest N published posts in a chosen category or tag in real-time.
- * Version: 1.3
+ * Version: 1.3.1
  * Requires at least:
  * Requires PHP:
  * Tested up to: 7.0
@@ -15,7 +15,7 @@
  * @package edh-recent-category-manager
  * @author EncodeDotHost
  * @contributor nbwpuk
- * @version 1.2.1
+ * @version 1.3.1
  * @link https://github.com/EncodeDotHost/edh-recent-category-manager
  * @license GPL v3 or later
  */
@@ -30,13 +30,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'admin_menu', 'edh_rcm_add_settings_page' );
 function edh_rcm_add_settings_page() {
-    add_posts_page(
+    $hook_suffix = add_posts_page(
         'EDH Recent Category Manager Settings',
         'Recent Posts',
         'manage_options',
         'edh-recent-category-manager',
         'edh_rcm_render_settings_page'
     );
+
+    add_action( 'admin_enqueue_scripts', function( $current_hook_suffix ) use ( $hook_suffix ) {
+        if ( $current_hook_suffix !== $hook_suffix ) {
+            return;
+        }
+        wp_enqueue_script(
+            'edh-rcm-admin',
+            plugins_url( 'assets/js/edh-rcm-admin.js', __FILE__ ),
+            array(),
+            '1.3.1',
+            true
+        );
+    } );
 }
 
 // ---------------------------------------------------------------------------
@@ -173,20 +186,6 @@ function edh_rcm_render_settings_page() {
             <?php submit_button(); ?>
         </form>
     </div>
-    <script>
-    (function() {
-        var radios = document.querySelectorAll('input[name="edh_recent_posts_taxonomy"]');
-        var rowCat = document.getElementById('edh-rp-row-category');
-        var rowTag = document.getElementById('edh-rp-row-tag');
-        function toggle(val) {
-            rowCat.style.display = (val === 'category') ? '' : 'none';
-            rowTag.style.display = (val === 'post_tag')  ? '' : 'none';
-        }
-        radios.forEach(function(r) {
-            r.addEventListener('change', function() { toggle(this.value); });
-        });
-    })();
-    </script>
     <?php
 }
 
