@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EDH Recent Category Manager
  * Description: Automatically maintains the latest N published posts in a chosen category or tag in real-time.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Requires at least:
  * Requires PHP:
  * Tested up to: 7.0
@@ -15,7 +15,7 @@
  * @package edh-recent-category-manager
  * @author EncodeDotHost
  * @contributor nbwpuk
- * @version 1.3.1
+ * @version 1.3.2
  * @link https://github.com/EncodeDotHost/edh-recent-category-manager
  * @license GPL v3 or later
  */
@@ -46,8 +46,14 @@ function edh_rcm_add_settings_page() {
             'edh-rcm-admin',
             plugins_url( 'assets/js/edh-rcm-admin.js', __FILE__ ),
             array(),
-            '1.3.1',
+            '1.3.2',
             true
+        );
+        wp_enqueue_style(
+            'edh-rcm-admin',
+            plugins_url( 'assets/css/edh-rcm-admin.css', __FILE__ ),
+            array(),
+            '1.3.2'
         );
     } );
 }
@@ -185,6 +191,7 @@ function edh_rcm_render_settings_page() {
             </table>
             <?php submit_button(); ?>
         </form>
+        <p class="edh-rcm-credit description">Proudly made by <a href="https://encode.host" target="_blank" rel="noopener noreferrer">EncodeDotHost</a></p>
     </div>
     <?php
 }

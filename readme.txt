@@ -4,7 +4,7 @@ Tags: categories, tags, posts, automation, recent posts
 Requires at least: 5.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -63,6 +63,9 @@ The plugin takes no action until a term is selected and saved in the settings.
 1. The settings page under Posts → Recent Posts.
 
 == Changelog ==
+
+= 1.3.2 =
+* Added a "Proudly made by EncodeDotHost" credit link to the settings page.
 
 = 1.3.1 =
 * Fixed: settings page JavaScript is now loaded via wp_enqueue_script() instead of an inline `<script>` tag, per WordPress plugin guidelines.
